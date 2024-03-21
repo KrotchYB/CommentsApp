@@ -1,32 +1,46 @@
 package com.example.CommentsApp.Services;
 
+import com.example.CommentsApp.Entities.Like;
 import com.example.CommentsApp.Entities.Post;
 import com.example.CommentsApp.Entities.User;
 import com.example.CommentsApp.Repos.PostRepository;
 import com.example.CommentsApp.Requests.PostCreateRequest;
 import com.example.CommentsApp.Requests.PostUpdateRequest;
+import com.example.CommentsApp.Responses.LikeResponse;
+import com.example.CommentsApp.Responses.PostResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
 
     private PostRepository postRepository;
+
+    private LikeService likeService;
     private UserService userService;
 
 
     public PostService(PostRepository postRepository, UserService userService) {
         this.postRepository = postRepository;
         this.userService = userService;
+
     }
 
+    public void setLikeService(LikeService likeService){
+        this.likeService = likeService;
+    }
 
-    public List<Post> getAllPosts(Optional<Long> userId) {
+    public List<PostResponse> getAllPosts(Optional<Long> userId) {
+        List<Post> postList;
         if(userId.isPresent())
-            return  postRepository.findByUserId(userId.get());
-        return postRepository.findAll();
+            postList=  postRepository.findByUserId(userId.get());
+        postList = postRepository.findAll();
+        return postList.stream().map(p -> {
+            List<LikeResponse> likes = likeService.getAllLikesWithParam(Optional.ofNullable(null), Optional.of(p.getId()));
+        return new PostResponse(p, likes);}).collect(Collectors.toList());
     }
 
     public Post getOnePostById(Long postId) {

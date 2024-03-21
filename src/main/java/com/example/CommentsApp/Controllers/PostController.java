@@ -3,6 +3,7 @@ package com.example.CommentsApp.Controllers;
 import com.example.CommentsApp.Entities.Post;
 import com.example.CommentsApp.Requests.PostCreateRequest;
 import com.example.CommentsApp.Requests.PostUpdateRequest;
+import com.example.CommentsApp.Responses.PostResponse;
 import com.example.CommentsApp.Services.PostService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> getAllPosts(@RequestParam Optional<Long> userId){
+    public List<PostResponse> getAllPosts(@RequestParam Optional<Long> userId){
         return postService.getAllPosts(userId);
     }
 

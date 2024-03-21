@@ -6,10 +6,12 @@ import com.example.CommentsApp.Entities.Post;
 import com.example.CommentsApp.Entities.User;
 import com.example.CommentsApp.Repos.LikeRepository;
 import com.example.CommentsApp.Requests.LikeCreateRequest;
+import com.example.CommentsApp.Responses.LikeResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LikeService {
@@ -26,19 +28,21 @@ public class LikeService {
         this.postService = postService;
     }
 
-    public List<Like> getAllLikesWithParam(Optional<Long> userId,
-                                           Optional<Long> postId) {
-
+    public List<LikeResponse> getAllLikesWithParam(Optional<Long> userId,
+                                                   Optional<Long> postId) {
+        List<Like> likeList;
         if(userId.isPresent() && postId.isPresent()){
-            return likeRepository.findByUserIdAndPostId(userId.get(), postId.get());
+            likeList = likeRepository.findByUserIdAndPostId(userId.get(), postId.get());
         }
         else if(userId.isPresent()){
-            return  likeRepository.findByUserId(userId.get());
+            likeList =  likeRepository.findByUserId(userId.get());
         }
         else if(postId.isPresent()){
-            return  likeRepository.findByPostId(postId.get());
+            likeList =  likeRepository.findByPostId(postId.get());
         }
-        else return likeRepository.findAll();
+        else likeList = likeRepository.findAll();
+
+        return likeList.stream().map(like -> new LikeResponse(like)).collect(Collectors.toList());
     }
 
     public Like getOneLikeById(Long likeId) {
