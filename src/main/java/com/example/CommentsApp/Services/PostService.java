@@ -8,6 +8,8 @@ import com.example.CommentsApp.Requests.PostCreateRequest;
 import com.example.CommentsApp.Requests.PostUpdateRequest;
 import com.example.CommentsApp.Responses.LikeResponse;
 import com.example.CommentsApp.Responses.PostResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,9 +28,10 @@ public class PostService {
     public PostService(PostRepository postRepository, UserService userService) {
         this.postRepository = postRepository;
         this.userService = userService;
-
     }
 
+    @Lazy
+    @Autowired
     public void setLikeService(LikeService likeService){
         this.likeService = likeService;
     }

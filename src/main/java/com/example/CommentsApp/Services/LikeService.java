@@ -7,6 +7,11 @@ import com.example.CommentsApp.Entities.User;
 import com.example.CommentsApp.Repos.LikeRepository;
 import com.example.CommentsApp.Requests.LikeCreateRequest;
 import com.example.CommentsApp.Responses.LikeResponse;
+import com.example.CommentsApp.Responses.PostResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,13 +21,16 @@ import java.util.stream.Collectors;
 @Service
 public class LikeService {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
     private LikeRepository likeRepository;
 
     private UserService userService;
     private PostService postService;
     public LikeService(LikeRepository likeRepository,
                        UserService userService,
-                       PostService postService) {
+                       PostService postService
+                      ) {
         this.likeRepository = likeRepository;
         this.userService = userService;
         this.postService = postService;
@@ -54,6 +62,7 @@ public class LikeService {
     }
 
     public Like createOneLike(LikeCreateRequest request) {
+        LOGGER.info("Kullanıcı like oluşturdu.");
         User user = userService.getOneUserById(request.getUserId());
         Post post = postService.getOnePostById(request.getPostId());
 

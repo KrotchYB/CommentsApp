@@ -4,6 +4,8 @@ import com.example.CommentsApp.Entities.Like;
 import com.example.CommentsApp.Requests.LikeCreateRequest;
 import com.example.CommentsApp.Responses.LikeResponse;
 import com.example.CommentsApp.Services.LikeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +28,12 @@ public class LikeController {
     }
 
     @GetMapping("/{likeId}")
-    public Like getOneLike(@PathVariable Long likeId){
-        return likeService.getOneLikeById(likeId);
+    public ResponseEntity<Like> getOneLike(@PathVariable Long likeId){
+        try {
+            return ResponseEntity.ok(likeService.getOneLikeById(likeId));
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{likeId}")
